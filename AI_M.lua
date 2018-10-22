@@ -1,6 +1,8 @@
 
-require "AI\\Const"
-require "AI\\Util"			
+require "AI_sakray\\USER_AI\\Const"
+require "AI_sakray\\USER_AI\\Util"	
+require "AI_sakray\\USER_AI\\MyFunc"
+dofile( "AI_sakray\\USER_AI\\A_Friends.lua")		
 
 -----------------------------
 -- state
@@ -24,16 +26,17 @@ FOLLOW_CMD_ST				= 12
 ------------------------------------------
 -- global variable
 ------------------------------------------
-MyState				= IDLE_ST	-- ÃÖÃÊÀÇ »óÅÂ´Â ÈÞ½Ä
-MyEnemy				= 0		-- Àû id
-MyDestX				= 0		-- ¸ñÀûÁö x
-MyDestY				= 0		-- ¸ñÀûÁö y
-MyPatrolX			= 0		-- Á¤Âû ¸ñÀûÁö x
-MyPatrolY			= 0		-- Á¤Âû ¸ñÀûÁö y
-ResCmdList			= List.new()	-- ¿¹¾à ¸í·É¾î ¸®½ºÆ® 
-MyID				= 0		-- ¿ëº´ id
-MySkill				= 0		-- ¿ëº´ÀÇ ½ºÅ³
-MySkillLevel		= 0		-- ¿ëº´ÀÇ ½ºÅ³ ·¹º§
+MyState				= IDLE_ST	-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½ ï¿½Þ½ï¿½
+MyEnemy				= 0		-- ï¿½ï¿½ id
+MyDestX				= 0		-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ x
+MyDestY				= 0		-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ y
+MyPatrolX			= 0		-- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ x
+MyPatrolY			= 0		-- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ y
+ResCmdList			= List.new()	-- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½É¾ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® 
+MyID				= 0		-- ï¿½ëº´ id
+MySkill				= 0		-- ï¿½ëº´ï¿½ï¿½ ï¿½ï¿½Å³
+MySkillLevel		= 0		-- ï¿½ëº´ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½
+MYTickTime		= 0
 ------------------------------------------
 
 
@@ -41,16 +44,16 @@ MySkillLevel		= 0		-- ¿ëº´ÀÇ ½ºÅ³ ·¹º§
 
 function	OnMOVE_CMD (x,y)
 	
-	TraceAI ("OnMOVE_CMD")
+	TraceAI ("OnMOVE_CMD-1")
 
 	if ( x == MyDestX and y == MyDestY and MOTION_MOVE == GetV(V_MOTION,MyID)) then
-		return		-- ÇöÀç ÀÌµ¿ÁßÀÎ ¸ñÀûÁö¿Í °°Àº °÷ÀÌ¸é Ã³¸®ÇÏÁö ¾Ê´Â´Ù. 
+		return		-- ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. 
 	end
 
 	local curX, curY = GetV (V_POSITION,MyID)
-	if (math.abs(x-curX)+math.abs(y-curY) > 15) then		-- ¸ñÀûÁö°¡ ÀÏÁ¤ °Å¸® ÀÌ»óÀÌ¸é (¼­¹ö¿¡¼­ ¸Õ°Å¸®´Â Ã³¸®ÇÏÁö ¾Ê±â ¶§¹®¿¡)
-		List.pushleft (ResCmdList,{MOVE_CMD,x,y})			-- ¿ø·¡ ¸ñÀûÁö·ÎÀÇ ÀÌµ¿À» ¿¹¾àÇÑ´Ù. 	
-		x = math.floor((x+curX)/2)							-- Áß°£ÁöÁ¡À¸·Î ¸ÕÀú ÀÌµ¿ÇÑ´Ù.  
+	if (math.abs(x-curX)+math.abs(y-curY) > 15) then		-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ°Å¸ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+		List.pushleft (ResCmdList,{MOVE_CMD,x,y})			-- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. 	
+		x = math.floor((x+curX)/2)							-- ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ñ´ï¿½.  
 		y = math.floor((y+curY)/2)							-- 
 	end
 
@@ -168,7 +171,7 @@ end
 
 function	OnFOLLOW_CMD ()
 
-	-- ´ë±â¸í·ÉÀº ´ë±â»óÅÂ¿Í ÈÞ½Ä»óÅÂ¸¦ ¼­·Î ÀüÈ¯½ÃÅ²´Ù. 
+	-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½Þ½Ä»ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½Å²ï¿½ï¿½. 
 	if (MyState ~= FOLLOW_CMD_ST) then
 		MoveToOwner (MyID)
 		MyState = FOLLOW_CMD_ST
@@ -230,8 +233,9 @@ function	OnIDLE_ST ()
 	TraceAI ("OnIDLE_ST")
 
 	local cmd = List.popleft(ResCmdList)
-	if (cmd ~= nil) then		
-		ProcessCommand (cmd)	-- ¿¹¾à ¸í·É¾î Ã³¸® 
+	if (cmd ~= nil) then	
+	TraceAI ("OnIDLE_ST - end")	
+		ProcessCommand (cmd)	-- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½É¾ï¿½ Ã³ï¿½ï¿½ 
 		return 
 	end
 
@@ -252,6 +256,7 @@ function	OnIDLE_ST ()
 	end
 
 	local distance = GetDistanceFromOwner(MyID)
+	TraceAI ("distance " ..distance )
 	if ( distance > 3 or distance == -1) then		-- MYOWNER_OUTSIGNT_IN
 		MyState = FOLLOW_ST
 		TraceAI ("IDLE_ST -> FOLLOW_ST")
@@ -268,7 +273,7 @@ function	OnFOLLOW_ST ()
 
 	if (GetDistanceFromOwner(MyID) <= 3) then		--  DESTINATION_ARRIVED_IN 
 		MyState = IDLE_ST
-		TraceAI ("FOLLOW_ST -> IDLW_ST")
+		TraceAI ("FOLLOW_ST -> IDLW_ST - 1")
 		return
 	elseif (GetV(V_MOTION,MyID) == MOTION_STAND) then
 		MoveToOwner (MyID)
@@ -291,6 +296,7 @@ function	OnCHASE_ST ()
 		TraceAI ("CHASE_ST -> IDLE_ST : ENEMY_OUTSIGHT_IN")
 		return
 	end
+
 	if (true == IsInAttackSight(MyID,MyEnemy)) then  -- ENEMY_INATTACKSIGHT_IN
 		MyState = ATTACK_ST
 		TraceAI ("CHASE_ST -> ATTACK_ST : ENEMY_INATTACKSIGHT_IN")
@@ -309,21 +315,127 @@ end
 
 
 
+function IsNotKS(myid,target)
+	--TraceAI("Checking for KS:"..target)
+	local targettarget=GetV(V_TARGET,target)
+	local motion=GetV(V_MOTION,target)
+	local tactks=KS_NEVER --GetTact(TACT_KS,target)
+	if (target==MyEnemy and BypassKSProtect==1) then --If owner has told homun to attack explicity, let it.
+		return 1
+	end
+	if target==nil then
+		TraceAI("IsNotKS")
+	end
+	if (IsPlayer(target)==1) then
+		--TraceAI("PVP - not KS")
+		return 1
+	elseif (IsFriend(targettarget)==1 or targettarget==myid) then
+		--TraceAI("Not KS - "..target.." fighting friend: "..targettarget)
+		return 1
+	elseif ((tactks==KS_POLITE or DoNotAttackMoving ==1) and motion==MOTION_MOVE) then
+		return 0
+	elseif (tactks==KS_ALWAYS) then
+		--TraceAI("It's an FFA monster, not a KS")
+		return 1
+	elseif targettarget > 0 and IsMonster(targettarget)~=1  then
+		--TraceAI("Is KS - "..target.." attacking player "..targettarget.." motion "..motion)
+		return 0
+	else
+		--TraceAI("Not Targeted - seeing if anyone is targeting it")
+		local actors = GetActors()
+		for i,v in ipairs(actors) do
+			if (IsMonster(v)~=1 and IsFriendOrSelf(v)==0) then
+				if (GetV(V_TARGET,v) == target and (v > 100000 or KSMercHomun ~=1)) then
+					--TraceAI("Is KS - "..target.." is targeted by "..v)
+					return 0
+				end
+			end
+		end
+	--TraceAI("Not KS - "..target.." is not targeted by any other player.")
+	return 1
+	end
+end
+function GetKSReason(myid,target)
+	--TraceAI("Checking for KS:"..target)
+	local targettarget=GetV(V_TARGET,target)
+	local motion=GetV(V_MOTION,target)
+	local tactks=GetTact(TACT_KS,target)
+	if (target==MyEnemy and BypassKSProtect==1) then --If owner has told homun to attack explicity, let it.
+		return "KS Protect bypassed"
+	end
+	if target==nil then
+		TraceAI("IsNotKS")
+	end
+	if (IsPlayer(target)==1) then
+		--TraceAI("PVP - not KS")
+		return "PVP, not KS"
+	elseif ((tactks==KS_POLITE or DoNotAttackMoving ==1) and motion==MOTION_MOVE) then
+		return "KS polite aka DoNotAttackMoving"
+	elseif (IsFriend(targettarget)==1 or targettarget==myid) then
+		--TraceAI("Not KS - "..target.." fighting friend: "..targettarget)
+		return "Not KS - enemy attacking "..targettarget
+	elseif (tactks==KS_ALWAYS) then
+		--TraceAI("It's an FFA monster, not a KS")
+		return "FFA monster"
+	elseif targettarget > 0 and IsMonster(targettarget)~=1 and Actors[targettarget]==1 then
+		--TraceAI("Is KS - "..target.." attacking player "..targettarget.." motion "..motion)
+		if MyFriends[targettarget]~=nil then
+			return "KS - enemy is attacking "..targettarget.." MyFriends: "..MyFriends[targettarget]
+		else
+			return "KS - enemy is attacking "..targettarget
+		end
+	else
+		--TraceAI("Not Targeted - seeing if anyone is targeting it")
+		local actors = GetActors()
+		for i,v in ipairs(actors) do
+			if (IsMonster(v)~=1 and IsFriendOrSelf(v)==0) then
+				if (GetV(V_TARGET,v) == target and (v > 100000 or KSMercHomun ~=1)) then
+					--TraceAI("Is KS - "..target.." is targeted by "..v)
+					if MyFriends[v]~=nil then
+						return "KS - enemy attacked by "..v.." MyFriends: "..MyFriends[v]
+					else
+						return "KS - enemy attacked by "..v
+					end
+				end
+			end
+		end
+	--TraceAI("Not KS - "..target.." is not targeted by any other player.")
+	return "not KS, not targeted by anything"
+	end
+end
+
 function	OnATTACK_ST ()
 
 	TraceAI ("OnATTACK_ST")
+
 	
 	if (true == IsOutOfSight(MyID,MyEnemy)) then	-- ENEMY_OUTSIGHT_IN
 		MyState = IDLE_ST
-		TraceAI ("ATTACK_ST -> IDLE_ST")
+		TraceAI ("ATTACK_ST -> IDLE_ST -- ENEMY_OUTSIGHT_IN")
 		return 
 	end
 
 	if (MOTION_DEAD == GetV(V_MOTION,MyEnemy)) then   -- ENEMY_DEAD_IN
 		MyState = IDLE_ST
-		TraceAI ("ATTACK_ST -> IDLE_ST")
+		TraceAI ("ATTACK_ST -> IDLE_ST -- ENEMY_DEAD_IN")
 		return
 	end
+
+	if(IsNotKS(MyID,MyEnemy)==0) then
+		local reason=GetKSReason(MyID,MyEnemy)
+		TraceAI ("CHASE_ST -> IDLE_ST : Enemy is taken "..reason)
+		MyState = IDLE_ST
+		MyEnemy = 0
+		EnemyPosX = {0,0,0,0,0,0,0,0,0,0}
+		EnemyPosY = {0,0,0,0,0,0,0,0,0,0}
+		MyDestX, MyDestY = 0,0
+		ChaseGiveUpCount=0
+		--if (FastChangeCount < FastChangeLimit and FastChange_C2I == 1) then
+		--	FastChangeCount = FastChangeCount+1
+			return OnIDLE_ST()
+		--end
+	end
+
 		
 	if (false == IsInAttackSight(MyID,MyEnemy)) then  -- ENEMY_OUTATTACKSIGHT_IN
 		MyState = CHASE_ST
@@ -332,16 +444,19 @@ function	OnATTACK_ST ()
 		TraceAI ("ATTACK_ST -> CHASE_ST  : ENEMY_OUTATTACKSIGHT_IN")
 		return
 	end
-	
 	if (MySkill == 0) then
+		TraceAI ("Attack")
 		Attack (MyID,MyEnemy)
 	else
-		if (1 == SkillObject(MyID,MySkillLevel,MySkill,MyEnemy)) then
-			MyEnemy = 0
-		end
+		SkillObject(MyID,MySkillLevel,MySkill,MyEnemy)
+		AutoSkillTimeout = GetTick()+15
+	--	if (1 == SkillObject(MyID,MySkillLevel,MySkill,MyEnemy)) then
+	--		MyEnemy = 0
+	--	end
 		
 		MySkill = 0
 	end
+	--TraceAI ("ATTACK_ "..MyEnemy)
 	TraceAI ("ATTACK_ST -> ATTACK_ST  : ENERGY_RECHARGED_IN")
 	return
 
@@ -485,25 +600,25 @@ function OnFOLLOW_CMD_ST ()
 	TraceAI ("OnFOLLOW_CMD_ST")
 
 	local ownerX, ownerY, myX, myY
-	ownerX, ownerY = GetV (V_POSITION,GetV(V_OWNER,MyID)) -- ÁÖÀÎ
-	myX, myY = GetV (V_POSITION,MyID)					  -- ³ª 
+	ownerX, ownerY = GetV (V_POSITION,GetV(V_OWNER,MyID)) -- ï¿½ï¿½ï¿½ï¿½
+	myX, myY = GetV (V_POSITION,MyID)					  -- ï¿½ï¿½ 
 	
 	local d = GetDistance (ownerX,ownerY,myX,myY)
 
-	if ( d <= 3) then									  -- 3¼¿ ÀÌÇÏ °Å¸®¸é 
+	if ( d <= 3) then									  -- 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ 
 		return 
 	end
 
 	local motion = GetV (V_MOTION,MyID)
-	if (motion == MOTION_MOVE) then                       -- ÀÌµ¿Áß
+	if (motion == MOTION_MOVE) then                       -- ï¿½Ìµï¿½ï¿½ï¿½
 		d = GetDistance (ownerX, ownerY, MyDestX, MyDestY)
-		if ( d > 3) then                                  -- ¸ñÀûÁö º¯°æ ?
+		if ( d > 3) then                                  -- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ?
 			MoveToOwner (MyID)
 			MyDestX = ownerX
 			MyDestY = ownerY
 			return
 		end
-	else                                                  -- ´Ù¸¥ µ¿ÀÛ 
+	else                                                  -- ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ 
 		MoveToOwner (MyID)
 		MyDestX = ownerX
 		MyDestY = ownerY
@@ -521,9 +636,13 @@ function	GetOwnerEnemy (myid)
 	local enemys = {}
 	local index = 1
 	local target
+	TraceAI ("GetOwnerEnemy")
 	for i,v in ipairs(actors) do
+		--TraceAI ("Get"..i.."also"..v)
+		--TraceAI ("owner -"..owner.."myid -"..myid)
 		if (v ~= owner and v ~= myid) then
 			target = GetV (V_TARGET,v)
+			TraceAI ("target "..target)
 			if (target == owner) then
 				if (IsMonster(v) == 1) then
 					enemys[index] = v
@@ -535,6 +654,18 @@ function	GetOwnerEnemy (myid)
 						index = index+1
 					end
 				end
+			else
+				if (IsMonster(v) == 1) then
+					enemys[index] = v
+					index = index+1
+				else
+					local motion = GetV(V_MOTION,i)
+					if (motion == MOTION_ATTACK or motion == MOTION_ATTACK2) then
+						enemys[index] = v
+						index = index+1
+					end
+				end
+
 			end
 		end
 	end
@@ -571,7 +702,7 @@ end
 
 
 -------------------------------------------
---  ºñ¼±°øÇü GetMyEnemy
+--  ï¿½ñ¼±°ï¿½ï¿½ï¿½ GetMyEnemy
 -------------------------------------------
 function	GetMyEnemyA (myid)
 	local result = 0
@@ -583,6 +714,8 @@ function	GetMyEnemyA (myid)
 	for i,v in ipairs(actors) do
 		if (v ~= owner and v ~= myid) then
 			target = GetV (V_TARGET,v)
+			TraceAI ("target "..target)
+
 			if (target == myid) then
 				enemys[index] = v
 				index = index+1
@@ -608,7 +741,7 @@ end
 
 
 -------------------------------------------
---  ¼±°øÇü GetMyEnemy
+--  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GetMyEnemy
 -------------------------------------------
 function	GetMyEnemyB (myid)
 	local result = 0
@@ -636,33 +769,132 @@ function	GetMyEnemyB (myid)
 		end
 	end
 
+			TraceAI ("target "..result)
+
 	return result
 end
 
+function Spel_on_self(myid)
 
+	-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+	SP_H = GetV (V_SP,myid)
+
+	-- ï¿½ï¿½ï¿½ ï¿½ï¿½
+	Vid_M= GetV (V_MERTYPE ,  myid)
+	TraceAI ("Spel_on_self ")
+	TraceAI ("Vid_M "..Vid_M)
+
+	-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	if Vid_M >0 and Vid_M<11 then
+		-- Disguse have same id as bower 
+		if Vid_M == 1 then
+			-- if SP_H > 12 then	
+			-- 	MySkill = MA_DOUBLE
+			-- 	MySkillLevel = 2
+			-- end
+		
+		elseif Vid_M == 3 then	-- Nami - 3rd Grade Bowman Mercenary 
+			-- MER_QUICKEN lv.1
+			TraceAI ("QuickenTimeout "..QuickenTimeout )
+			if QuickenTimeout - GetTick () > 30*60 and SP_H > 13 then
+				QuickenTimeout = GetTick ()
+				MySkillLevel = 1
+				SkillObject (myid , MySkillLevel , MER_QUICKEN , myid)
+				TraceAI ("QuickenTimeout ")
+	
+			end	
+		elseif Vid_M == 4 then-- Elfin - 4th Grade Bowman Mercenary 
+		elseif Vid_M == 6 then-- Elfin - 6th Grade Bowman Mercenary
+            if SP_H > 12 then
+                MySkill = MA_DOUBLE
+                MySkillLevel = 7
+            end
+		elseif Vid_M == 8 then-- Hiyori - 8th Grade Bowman Mercenary 
+ 			-- MER_QUICKEN lv.2
+		elseif Vid_M == 10 then-- Hiyori - 8th Grade Bowman Mercenary 
+ 			-- MER_QUICKEN lv.5
+		end
+	--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	elseif Vid_M >10 and Vid_M<21 then
+
+
+
+	--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	elseif Vid_M >20 and Vid_M<31 then
+		if Vid_M == 21 then
+			if SP_H > 8 then	
+				MySkill = MS_BASH
+				MySkillLevel =1
+			end
+		elseif Vid_M == 22 then	-- Nami - 3rd Grade Bowman Mercenary 
+			-- MER_QUICKEN lv.1
+			if  GetTick () -QuickenTimeout > 30*60 and SP_H > 13 then
+				QuickenTimeout = GetTick ()
+				SkillObject (myid , 1 , MER_QUICKEN , myid)
+			end	
+		elseif Vid_M == 25 then	-- Ryan - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+			if SP_H > 20 then	
+				MySkill = MS_BASH
+				MySkillLevel =5
+			end
+		elseif Vid_M == 27 then	-- Ryan - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+			if (SP_H > 20)and(GetTick() >= AutoSkillTimeout) then	
+				MySkill = MS_BASH
+				MySkillLevel =10
+			end
+		elseif Vid_M == 28 then	-- Ryan - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+			if  GetTick () -QuickenTimeout > 30*60 and SP_H > 13 then
+				QuickenTimeout = GetTick ()
+				SkillObject (myid , 1 , MER_QUICKEN , myid)
+			end	
+
+		elseif Vid_M == 29 then	-- Ryan - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+		--	if (SP_H > 20)and(GetTick() >= AutoSkillTimeout) then	
+		--		MySkill = MER_CRASH
+		--		MySkillLevel =3
+		--	end
+
+
+
+		end
+
+end
+end
 
 function AI(myid)
 
 	MyID = myid
 	local msg	= GetMsg (myid)			-- command
 	local rmsg	= GetResMsg (myid)		-- reserved command
-
+	--MYTickTime	= MYTickTime+1
 	
+	--QuickenTimeout = GetTick()
+	--TraceAI ("MYTickTime "..MYTickTime)
+	--TraceAI ("MyState "..MyState)
+
+	-- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	Spel_on_self(myid)
+
 	if msg[1] == NONE_CMD then
 		if rmsg[1] ~= NONE_CMD then
 			if List.size(ResCmdList) < 10 then
-				List.pushright (ResCmdList,rmsg) -- ¿¹¾à ¸í·É ÀúÀå
+				List.pushright (ResCmdList,rmsg) -- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			end
 		end
 	else
-		List.clear (ResCmdList)	-- »õ·Î¿î ¸í·ÉÀÌ ÀÔ·ÂµÇ¸é ¿¹¾à ¸í·ÉµéÀº »èÁ¦ÇÑ´Ù.  
-		ProcessCommand (msg)	-- ¸í·É¾î Ã³¸® 
+		List.clear (ResCmdList)	-- ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ÂµÇ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Éµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.  
+		ProcessCommand (msg)	-- ï¿½ï¿½É¾ï¿½ Ã³ï¿½ï¿½ 
 	end
 
 		
-	-- »óÅÂ Ã³¸® 
+	-- ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ 
  	if (MyState == IDLE_ST) then
 		OnIDLE_ST ()
+
 	elseif (MyState == CHASE_ST) then					
 		OnCHASE_ST ()
 	elseif (MyState == ATTACK_ST) then

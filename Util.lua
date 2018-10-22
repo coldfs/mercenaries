@@ -142,8 +142,17 @@ function	IsInAttackSight (id1,id2)
 	local a     = 0
 	if (MySkill == 0) then
 		a     = GetV (V_ATTACKRANGE,id1)
+		
+
 	else
-		a     = GetV (V_SKILLATTACKRANGE_LEVEL, id1, MySkill, MySkillLevel)
+		Vid_M= GetV (V_MERTYPE ,  id1)
+		if Vid_M <11 then
+			a     = 10
+		else 
+			a     = 2
+		end
+		--a     = GetV (V_SKILLATTACKRANGE_LEVEL, id1, MySkill, MySkillLevel)
+
 	end
 
 	if a >= d then

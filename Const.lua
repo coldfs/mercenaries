@@ -108,9 +108,66 @@ SWORDMAN08	= 28
 SWORDMAN09	= 29
 SWORDMAN10	= 30
 --------------------------------------------
-
-
-
+--Autoskill timeout counters
+QuickenTimeout			= 0
+GuardTimeout			= 0
+MagTimeout			= 0
+SightTimeout			= 0
+SOffensiveTimeout		= 0
+SDefensiveTimeout		= 0
+SOwnerBuffTimeout		= 0
+SkillTimeout			= 0
+ProvokeOwnerTimeout		= 0
+ProvokeSelfTimeout		= 0
+SacrificeTimeout		= 0
+OffensiveOwnerTimeout	= 0
+DefensiveOwnerTimeout	= 0
+OtherOwnerTimeout		= 0
+SteinWandTimeout		= 0
+AutoSkillTimeout		= 0 --Cast time + delay timeout
+AttackTimeout			= 0 --for AttackTimeLimit
+AutoSkillCastTimeout	= 0 --Cast time timeout
+TankHitTimeout			= 0
+SkillObjectCMDTimeout   = 0
+AshTimeout 				= {0,0,0}
+--------------------------------------------
+MS_BASH			= 8201
+MS_MAGNUM		= 8202
+MS_BOWLINGBASH		= 8203
+MS_PARRYING		= 8204
+MS_REFLECTSHIELD	= 8205
+MS_BERSERK		= 8206
+MA_DOUBLE		= 8207
+MA_SHOWER		= 8208
+MA_SKIDTRAP		= 8209
+MA_LANDMINE		= 8210
+MA_SANDMAN		= 8211
+MA_FREEZINGTRAP		= 8212
+MA_REMOVETRAP		= 8213
+MA_CHARGEARROW		= 8214
+MA_SHARPSHOOTING	= 8215
+ML_PIERCE		= 8216
+ML_BRANDISH		= 8217
+ML_SPIRALPIERCE		= 8218
+ML_DEFENDER		= 8219
+ML_AUTOGUARD		= 8220
+ML_DEVOTION		= 8221
+MER_MAGNIFICAT		= 8222
+MER_QUICKEN		= 8223
+MER_SIGHT		= 8224
+MER_CRASH		= 8225
+MER_REGAIN		= 8226
+MER_TENDER		= 8227
+MER_BENEDICTION		= 8228
+MER_RECUPERATE		= 8229
+MER_MENTALCURE		= 8230
+MER_COMPRESS		= 8231
+MER_PROVOKE		= 8232
+MER_AUTOBERSERK		= 8233
+MER_DECAGI		= 8234
+MER_SCAPEGOAT		= 8235
+MER_LEXDIVINA		= 8236
+MER_ESTIMATION		= 8237
 --------------------------
 MOTION_STAND	= 0
 MOTION_MOVE		= 1
@@ -119,6 +176,30 @@ MOTION_DEAD     = 3
 MOTION_ATTACK2	= 9 
 --------------------------
 
+
+KS_NEVER=0
+KS_ALWAYS=1
+KS_POLITE=-1
+
+---------------------------
+-- PVP/Friend Crap
+---------------------------
+
+ALLY	= 13
+KOS	= 12
+ENEMY	= 11
+NEUTRAL	= 10
+RETAINER= 2
+FRIEND	= 1
+PKFRIEND = 3
+
+STRING_FRIENDNAMES={}
+STRING_FRIENDNAMES[ALLY]="ALLY"
+STRING_FRIENDNAMES[FRIEND]="FRIEND"
+STRING_FRIENDNAMES[RETAINER]="RETAINER"
+STRING_FRIENDNAMES[NEUTRAL]="NEUTRAL"
+STRING_FRIENDNAMES[ENEMY]="ENEMY"
+STRING_FRIENDNAMES[KOS]="KOS"
 
 
 
@@ -135,6 +216,7 @@ HOLD_CMD			= 6
 SKILL_OBJECT_CMD	= 7
 SKILL_AREA_CMD		= 8
 FOLLOW_CMD			= 9
+TACT_KS = 0
 --------------------------
 
 

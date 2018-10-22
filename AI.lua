@@ -22,18 +22,28 @@ FOLLOW_CMD_ST				= 12
 
 
 ------------------------------------------
--- global variable
-------------------------------------------
-MyState				= IDLE_ST	-- ÃÖÃÊÀÇ »óÅÂ´Â ÈÞ½Ä
-MyEnemy				= 0		-- Àû id
-MyDestX				= 0		-- ¸ñÀûÁö x
-MyDestY				= 0		-- ¸ñÀûÁö y
-MyPatrolX			= 0		-- Á¤Âû ¸ñÀûÁö x
-MyPatrolY			= 0		-- Á¤Âû ¸ñÀûÁö y
-ResCmdList			= List.new()	-- ¿¹¾à ¸í·É¾î ¸®½ºÆ® 
-MyID				= 0		-- È£¹®Å¬·ç½º id
-MySkill				= 0		-- È£¹®Å¬·ç½ºÀÇ ½ºÅ³
-MySkillLevel		= 0		-- È£¹®Å¬·ç½ºÀÇ ½ºÅ³ ·¹º§
+-- global variable--Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+--------------------Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+MyState = nil		--Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+MyEnemy = nil	--Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+MyDestX	 = nil	--Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+MyDestY	 = nil	--Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+MyPatrolX = nil	--Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+MyPatrolY = nil	--Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+ResCmdList = nil	--Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+MyID = nil  	--Possible values are NEUTRAL, KOS (kill on sight), ENEMY (assume hostile, but don't attack), and ALLY (assume friendly).
+
+MySkill				= 0		-- È£ï¿½ï¿½Å¬ï¿½ç½ºï¿½ï¿½ ï¿½ï¿½Å³
+MySkillLevel		= 0		-- È£ï¿½ï¿½Å¬ï¿½ç½ºï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½
 ------------------------------------------
 
 
@@ -44,13 +54,13 @@ function	OnMOVE_CMD (x,y)
 	TraceAI ("OnMOVE_CMD")
 
 	if ( x == MyDestX and y == MyDestY and MOTION_MOVE == GetV(V_MOTION,MyID)) then
-		return		-- ÇöÀç ÀÌµ¿ÁßÀÎ ¸ñÀûÁö¿Í °°Àº °÷ÀÌ¸é Ã³¸®ÇÏÁö ¾Ê´Â´Ù. 
+		return		-- ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½. 
 	end
 
 	local curX, curY = GetV (V_POSITION,MyID)
-	if (math.abs(x-curX)+math.abs(y-curY) > 15) then		-- ¸ñÀûÁö°¡ ÀÏÁ¤ °Å¸® ÀÌ»óÀÌ¸é (¼­¹ö¿¡¼­ ¸Õ°Å¸®´Â Ã³¸®ÇÏÁö ¾Ê±â ¶§¹®¿¡)
-		List.pushleft (ResCmdList,{MOVE_CMD,x,y})			-- ¿ø·¡ ¸ñÀûÁö·ÎÀÇ ÀÌµ¿À» ¿¹¾àÇÑ´Ù. 	
-		x = math.floor((x+curX)/2)							-- Áß°£ÁöÁ¡À¸·Î ¸ÕÀú ÀÌµ¿ÇÑ´Ù.  
+	if (math.abs(x-curX)+math.abs(y-curY) > 15) then		-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½Ì»ï¿½ï¿½Ì¸ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ°Å¸ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+		List.pushleft (ResCmdList,{MOVE_CMD,x,y})			-- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. 	
+		x = math.floor((x+curX)/2)							-- ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ñ´ï¿½.  
 		y = math.floor((y+curY)/2)							-- 
 	end
 
@@ -168,7 +178,7 @@ end
 
 function	OnFOLLOW_CMD ()
 
-	-- ´ë±â¸í·ÉÀº ´ë±â»óÅÂ¿Í ÈÞ½Ä»óÅÂ¸¦ ¼­·Î ÀüÈ¯½ÃÅ²´Ù. 
+	-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½Þ½Ä»ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½Å²ï¿½ï¿½. 
 	if (MyState ~= FOLLOW_CMD_ST) then
 		MoveToOwner (MyID)
 		MyState = FOLLOW_CMD_ST
@@ -231,7 +241,7 @@ function	OnIDLE_ST ()
 
 	local cmd = List.popleft(ResCmdList)
 	if (cmd ~= nil) then		
-		ProcessCommand (cmd)	-- ¿¹¾à ¸í·É¾î Ã³¸® 
+		ProcessCommand (cmd)	-- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½É¾ï¿½ Ã³ï¿½ï¿½ 
 		return 
 	end
 
@@ -485,25 +495,25 @@ function OnFOLLOW_CMD_ST ()
 	TraceAI ("OnFOLLOW_CMD_ST")
 
 	local ownerX, ownerY, myX, myY
-	ownerX, ownerY = GetV (V_POSITION,GetV(V_OWNER,MyID)) -- ÁÖÀÎ
-	myX, myY = GetV (V_POSITION,MyID)					  -- ³ª 
+	ownerX, ownerY = GetV (V_POSITION,GetV(V_OWNER,MyID)) -- ï¿½ï¿½ï¿½ï¿½
+	myX, myY = GetV (V_POSITION,MyID)					  -- ï¿½ï¿½ 
 	
 	local d = GetDistance (ownerX,ownerY,myX,myY)
 
-	if ( d <= 3) then									  -- 3¼¿ ÀÌÇÏ °Å¸®¸é 
+	if ( d <= 3) then									  -- 3ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ 
 		return 
 	end
 
 	local motion = GetV (V_MOTION,MyID)
-	if (motion == MOTION_MOVE) then                       -- ÀÌµ¿Áß
+	if (motion == MOTION_MOVE) then                       -- ï¿½Ìµï¿½ï¿½ï¿½
 		d = GetDistance (ownerX, ownerY, MyDestX, MyDestY)
-		if ( d > 3) then                                  -- ¸ñÀûÁö º¯°æ ?
+		if ( d > 3) then                                  -- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ?
 			MoveToOwner (MyID)
 			MyDestX = ownerX
 			MyDestY = ownerY
 			return
 		end
-	else                                                  -- ´Ù¸¥ µ¿ÀÛ 
+	else                                                  -- ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ 
 		MoveToOwner (MyID)
 		MyDestX = ownerX
 		MyDestY = ownerY
@@ -570,7 +580,7 @@ end
 
 
 -------------------------------------------
---  ºñ¼±°øÇü GetMyEnemy
+--  ï¿½ñ¼±°ï¿½ï¿½ï¿½ GetMyEnemy
 -------------------------------------------
 function	GetMyEnemyA (myid)
 	local result = 0
@@ -607,7 +617,7 @@ end
 
 
 -------------------------------------------
---  ¼±°øÇü GetMyEnemy
+--  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GetMyEnemy
 -------------------------------------------
 function	GetMyEnemyB (myid)
 	local result = 0
@@ -650,16 +660,16 @@ function AI(myid)
 	if msg[1] == NONE_CMD then
 		if rmsg[1] ~= NONE_CMD then
 			if List.size(ResCmdList) < 10 then
-				List.pushright (ResCmdList,rmsg) -- ¿¹¾à ¸í·É ÀúÀå
+				List.pushright (ResCmdList,rmsg) -- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			end
 		end
 	else
-		List.clear (ResCmdList)	-- »õ·Î¿î ¸í·ÉÀÌ ÀÔ·ÂµÇ¸é ¿¹¾à ¸í·ÉµéÀº »èÁ¦ÇÑ´Ù.  
-		ProcessCommand (msg)	-- ¸í·É¾î Ã³¸® 
+		List.clear (ResCmdList)	-- ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ÂµÇ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Éµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.  
+		ProcessCommand (msg)	-- ï¿½ï¿½É¾ï¿½ Ã³ï¿½ï¿½ 
 	end
 
 		
-	-- »óÅÂ Ã³¸® 
+	-- ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ 
  	if (MyState == IDLE_ST) then
 		OnIDLE_ST ()
 	elseif (MyState == CHASE_ST) then					
