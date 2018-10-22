@@ -359,7 +359,7 @@ function GetKSReason(myid,target)
 	--TraceAI("Checking for KS:"..target)
 	local targettarget=GetV(V_TARGET,target)
 	local motion=GetV(V_MOTION,target)
-	local tactks=GetTact(TACT_KS,target)
+	local tactks=KS_NEVER --GetTact(TACT_KS,target)
 	if (target==MyEnemy and BypassKSProtect==1) then --If owner has told homun to attack explicity, let it.
 		return "KS Protect bypassed"
 	end
