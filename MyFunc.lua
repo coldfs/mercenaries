@@ -162,27 +162,38 @@ CHASE_CLEVER = 2
 --### Tactics Functions ###
 --######################### 
 
+function logProxy(log_message)
+	-- temporary disable logs
+	-- TraceAI(log_message)
+end
+
+function logThis(log_message)
+	-- logProxy(log_message)
+	TraceAI(" "..log_message)
+end
+
+
 function 	GetTact(t,m)
 	local x
 	if m==nil then
-		TraceAI("GetTact: Error - nil target")
+		logProxy("GetTact: Error - nil target")
 		-- logappend("AAI_ERROR","GetTact: Error - nil target")
 	end
 	if t==nil then
-		TraceAI("GetTact: Error - nil tactic target:"..m)
+		logProxy("GetTact: Error - nil tactic target:"..m)
 		-- logappend("AAI_ERROR","request for tactic type nil target:"..m)
 	end
 	if (IsPlayer(m)==1) then
 		if (PVPmode~=0) then
-			TraceAI("GetTact: Returning pvp tactic")
+			logProxy("GetTact: Returning pvp tactic")
 			return GetPVPTact(t,m)
 		else
-			TraceAI("GetTact: not pvp mode returning 0")
+			logProxy("GetTact: not pvp mode returning 0")
 			return 0
 		end
 	end
 	local e = 0
-	if (IsHomun(MyID)==0) then 
+	if (IsHomun(MyID)==0) then
 		if (MobID[m]==nil) then
 			e=GetClass(m)
 		else
@@ -195,16 +206,16 @@ function 	GetTact(t,m)
 	if (temp==nil) then
 		if (e >= 1324 and e <= 1363) or (e >= 1938 and e <=1946) then
 			temp=GetMyTact(13)
-			TraceAI("GetTact: No tactic "..t.." for "..e.."actor: "..m.." but it's a treasure chest.")
+			logProxy("GetTact: No tactic "..t.." for "..e.."actor: "..m.." but it's a treasure chest.")
 		end
 		if temp==nil then
 			temp=GetMyTact(0)
-			--TraceAI("GetTact: No tactic "..t.." for "..e.."actor: "..m.." using default instead")
+			--logProxy("GetTact: No tactic "..t.." for "..e.."actor: "..m.." using default instead")
 		end
 	end
 	if (temp[t]==nil) then
 		temp=GetMyTact(0)
-		TraceAI("GetTact: Undefined tactic "..t.." for "..e.."actor: "..m.." using default instead")
+		logProxy("GetTact: Undefined tactic "..t.." for "..e.."actor: "..m.." using default instead")
 	end
 	x=temp[t]
 	if (x==nil) then
@@ -214,10 +225,10 @@ function 	GetTact(t,m)
 		if t==TACT_SP and x==-1 then
 			x = AttackSkillReserveSP
 		elseif t==TACT_CHASE then
-			--TraceAI("TactChase called"..GetV(V_SP,MyID).." "..ChaseSPPauseSP.." "..GetTick().." "..math.max(LastMovedTime,LastSPTime).." "..(5000-ChaseSPPauseTime))
+			--logProxy("TactChase called"..GetV(V_SP,MyID).." "..ChaseSPPauseSP.." "..GetTick().." "..math.max(LastMovedTime,LastSPTime).." "..(5000-ChaseSPPauseTime))
 			if GetV(V_SP,MyID) < ChaseSPPauseSP and (GetTick() - math.max(LastMovedTime,LastSPTime)) > (5000-ChaseSPPauseTime) then 
 				if ((ChaseSPPause==1 and x~=CHASE_ALWAYS) or x==CHASE_CLEVER) then
-					TraceAI("Cleverchase activated: "..m.." ("..e..") ".." LastTick "..math.max(LastMovedTime,LastSPTime))
+					logProxy("Cleverchase activated: "..m.." ("..e..") ".." LastTick "..math.max(LastMovedTime,LastSPTime))
 					return 1
 				end
 			end
@@ -240,9 +251,10 @@ end
 -- HERE THE OLD CODE
 
 function IsMonster(v)
-	TraceAI("Ataking")
-    TraceAI(tostring(v))
-	--TraceAI ("ATTACK_ "..tonumber(string.sub(tostring(v),5)))
+	TraceAI(" ATACK!!!! CHECKING MONSTER FOR THE GLORY OF SATAN")
+	TraceAI(" TO STRING ID["..tostring(v).."]")
+	TraceAI(" JUST ID["..v.."]")
+	--logProxy ("ATTACK_ "..tonumber(string.sub(tostring(v),5)))
 	if tonumber(string.sub(tostring(v),5))~=nil then
 		if (tonumber(string.sub(tostring(v),5)) > 10000) then
 			return 1
@@ -344,7 +356,7 @@ function	GetEnemyList (myid,aggro)
 		oskill,olevel=GetAtkSkill(MyID)
 		mskill,mlevel=GetMinionSkill(MyID)
 	end
-	TraceAI("GetEnemyList with aggro "..aggro)
+	logProxy("GetEnemyList with aggro "..aggro)
 	for k,v in pairs(Targets) do
 		tact = GetTact(TACT_BASIC,k)
 		casttact=GetTact(TACT_CAST,k)
@@ -355,24 +367,24 @@ function	GetEnemyList (myid,aggro)
 				tact = TACT_TANK
 			end
 		end
-		--TraceAI("Target"..k.." tact:"..tact.." Motion"..v[1].." TClass"..v[2])
+		--logProxy("Target"..k.." tact:"..tact.." Motion"..v[1].." TClass"..v[2])
 		if (0 < tact and (tact < 5 or tact >9) and aggro==1 and (DoNotAttackMoving ~=1 or v[1]~=1) and (tact ~= 14 or AttackLastFullSP==0 or SPPercent(MyID)==100)) or  (tact > 9 and tact < 13 and aggro == 2 and k~=MyEnemy) or  (v[2]>0 and tact>0 and (tact~=9 or v[2]==1) and (v[1]==3 or casttact >= CAST_REACT) and aggro~=2 and (aggro > -1 or (aggro==-2 and IsRescueTarget(k)==1))) or (tact == -1 and aggro==-1 and v[2]~=1) then
-			--TraceAI("Tactics say to attack:"..k)
+			--logProxy("Tactics say to attack:"..k)
 			if (IsNotKS(myid,k)==1 and v[1] > -1) then
-				--TraceAI("Is alive and not a KS")
+				--logProxy("Is alive and not a KS")
 				if aggro == 0 or (aggro~=2 and v[2]>0) then 
 					if (GetMoveBounds() >= GetDistanceRect(owner,k)) then
-						--TraceAI("Adding to target list: "..k)
+						--logProxy("Adding to target list: "..k)
 						r={v[1],v[2],tact,casttact}
 						enemys[k] = r
 					--else 
 					--	tempx,tempy=GetV(V_POSITION,owner)
 					--	targx,targy=GetV(V_POSITION,k)
-					--	TraceAI("target ignored "..k.." mypos "..tempx..","..tempy.." enemy "..targx..","..targy.." bounds "..GetMoveBounds().."dist "..GetDistanceRect(owner,k))
+					--	logProxy("target ignored "..k.." mypos "..tempx..","..tempy.." enemy "..targx..","..targy.." bounds "..GetMoveBounds().."dist "..GetDistanceRect(owner,k))
 					end
 				elseif aggro~=2 then
 					if (GetAggroDist() >= GetDistanceA(owner,k)) then
-						TraceAI("Adding to target list: "..k)
+						logProxy("Adding to target list: "..k)
 						r={v[1],v[2],tact,casttact}
 						enemys[k] = r
 					end
@@ -440,7 +452,7 @@ function SelectEnemy(enemys,curenemy)
 			aggro=0
 		end
 		priority=convpriority(basepriority,aggro)
-		--TraceAI(k.." "..basepriority.." "..priority)
+		--logProxy(k.." "..basepriority.." "..priority)
 		--elseif ((priority==2 or priority==5) and (v[1]==3 or v[4]>=CAST_REACT)) then
 		--	aggro=-1
 		--elseif then	
@@ -454,7 +466,7 @@ function SelectEnemy(enemys,curenemy)
 			unreachable=0
 		end
 		
-		--TraceAI(priority.."/"..min_priority.." "..dis.."/"..min_dis.." "..unreachable.."/"..max_reachable)
+		--logProxy(priority.."/"..min_priority.." "..dis.."/"..min_dis.." "..unreachable.."/"..max_reachable)
 		if (unreachable <= max_reachable) then
 			--if (aggro >= min_aggro) then
 				if (priority > min_priority or (priority==min_priority and dis < min_dis)) then
@@ -474,7 +486,7 @@ function SelectEnemy(enemys,curenemy)
 	else 
 		AllTargetUnreachable=0
 	end
-	--TraceAI("SelectEnemy returning target "..result)
+	--logProxy("SelectEnemy returning target "..result)
 	return result
 end
 function convpriority(base,agr)
@@ -736,7 +748,7 @@ function GetMinionSkill(myid)
 	if (IsHomun(myid)==1) then
 		if GetV(V_HOMUNTYPE,MyID)==SERA and UseSeraCallLegion==1 then
 			skill=MH_SUMMON_LEGION
-			TraceAI("GetMinionSkill"..skill)
+			logProxy("GetMinionSkill"..skill)
 			if SeraCallLegionLevel == nil then
 				level=5
 			elseif SeraCallLegionLevel < 1 then
@@ -746,7 +758,7 @@ function GetMinionSkill(myid)
 			else
 				level=SeraCallLegionLevel
 			end
-			TraceAI("GetMinionSkill "..skill..level)
+			logProxy("GetMinionSkill "..skill..level)
 			if AutoSkillCooldown[skill]~=nil then
 				if GetTick() < AutoSkillCooldown[skill] then -- in cooldown
 					level=0

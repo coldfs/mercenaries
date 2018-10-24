@@ -3,7 +3,7 @@
 --  c function
 
 --[[
-function	TraceAI (string) end
+function	logProxy (string) end
 function	MoveToOwner (id) end
 function 	Move (id,x,y) end
 function	Attack (id,id) end
