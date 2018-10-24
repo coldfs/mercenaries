@@ -1,14 +1,253 @@
+MyTact={}
+MyTact[0]={TACT_ATTACK_M,SKILL_ALWAYS,KITE_NEVER,CAST_REACT,PUSH_SELF,DEBUFF_NEVER,CLASS_BOTH,RESCUE_RETAINER,-1,SNIPE_OK,KS_NEVER,1,CHASE_NORMAL} --Default
+MyTact[10]={TACT_REACT_M,SKILL_ALWAYS,KITE_REACT,CAST_REACT,PUSH_SELF,DEBUFF_NEVER,CLASS_BOTH,RESCUE_NEVER,-1,SNIPE_OK,KS_NEVER,1,CHASE_NORMAL} --Default Summon
+MyTact[11]={TACT_REACT_M,SKILL_NEVER,KITE_NEVER,CAST_PASSIVE,PUSH_NEVER,DEBUFF_NEVER,CLASS_BOTH,RESCUE_NEVER,-1,SNIPE_OK,KS_NEVER,1,CHASE_NORMAL} --Autodetect Plant 
 
-function IsMonster(v)
-	
---TraceAI ("ATTACK_ "..tonumber(string.sub(tostring(v),5)))
-if tonumber(string.sub(tostring(v),5))~=nil then
-if (tonumber(string.sub(tostring(v),5)) > 10000) then
-		return 1
+
+---------------------------
+--Constants (used in GetTact() calls)
+---------------------------
+TACT_BASIC	= 1
+TACT_SKILL	= 2
+TACT_KITE	= 3
+TACT_CAST	= 4 --Assume casts are offencive?
+TACT_PUSHBACK	= 5
+TACT_DEBUFF	= 6
+TACT_SIZE	= 7
+TACT_SKILLCLASS = 7
+TACT_RESCUE	= 8
+TACT_SP		= 9
+TACT_SNIPE	= 10
+TACT_FFA	= 11
+TACT_KS		= 11
+TACT_WEIGHT = 12
+TACT_CHASE	= 13
+
+---------------------------
+--Tactics (responce to monster)
+---------------------------
+TACT_TANKMOB = -2
+TACT_TANK	= -1
+TACT_IGNORE	= 0	-- Do not attack the monster 
+TACT_ATTACK_L	= 2	----
+TACT_ATTACK_M	= 3	--Attack when HP > AggroHP
+TACT_ATTACK_H	= 4	----
+TACT_REACT_L	= 5	----
+TACT_REACT_M	= 7	--Defend when attacked only
+TACT_REACT_H	= 8	----
+TACT_REACT_SELF = 9	--React only when attacked, not when owner attacked.
+TACT_SNIPE_L	=10	-- sniping tactics
+TACT_SNIPE_M	=11	-- use skill once	
+TACT_SNIPE_H	=12	-- while attacking other monsters, otherwise as TACT_ATTACK
+TACT_ATK_L_REACT_M = 13
+TACT_ATTACK_LAST = 14
+TACT_ATTACK_TOP = 15
+
+
+---------------------------
+--Tactics (skill use)
+--In tact lists, put another number in this field 
+--to specify the number of skills it will use.
+--if negative, will use skill of this LEVEL, only ONCE.
+---------------------------
+
+SKILL_NEVER	=0
+SKILL_ALWAYS	=100
+
+---------------------------
+--Tactics (Kiting)
+---------------------------
+
+KITE_ALWAYS	= 2
+KITE_REACT	= 1
+KITE_NEVER	= 0
+
+---------------------------
+--Tactics (Cast react)
+---------------------------
+
+CAST_REACT_MAIN		= 10
+CAST_REACT_S		= 11
+CAST_REACT_MOB		= 12
+CAST_REACT_DEBUFF	= 13
+CAST_REACT_MINION	= 15
+CAST_REACT_ANY		= 9
+CAST_REACT_CRASH 	= 8225
+CAST_REACT_PROVOKE 	= 8232
+CAST_REACT_SANDMAN 	= 8211
+CAST_REACT_FREEZE 	= 8212
+CAST_REACT_DECAGI 	= 8234
+CAST_REACT_LEXDIV 	= 8236
+CAST_REACT_BREEZE	=8026
+CAST_REACT	= 1
+CAST_PASSIVE	= 0
+
+---------------------------
+--Tactics (Pushback)
+---------------------------
+
+PUSH_FRIEND	= 2
+PUSH_SELF	= 1
+PUSH_NEVER	= 0
+
+---------------------------
+--Tactics (Debuffs)
+---------------------------
+
+DEBUFF_NEVER 	=0 -- To use Debuff skill, use the skill as the debuff field of the tactlist.
+DEBUFF_NEVER = 0
+DEBUFF_ANY_C = -1
+DEBUFF_CRASH_C = -8225
+DEBUFF_PROVOKE_C = -8232
+DEBUFF_SANDMAN_C = -8211
+DEBUFF_FREEZE_C = -8212
+DEBUFF_DECAGI_C = -8234
+DEBUFF_LEXDIV_C = -8236
+DEBUFF_BREEZE_C=-8026
+DEBUFF_ASH_C=-8043
+DEBUFF_ANY_A = 1
+DEBUFF_CRASH_A = 8225
+DEBUFF_PROVOKE_A = 8232
+DEBUFF_SANDMAN_A = 8211
+DEBUFF_FREEZE_A = 8212
+DEBUFF_DECAGI_A = 8234
+DEBUFF_LEXDIV_A = 8236
+DEBUFF_BREEZE_A=8026
+DEBUFF_ASH_A=8043
+
+---------------------------
+--Tactics (SKILL CLASS)
+---------------------------
+
+CLASS_BOTH	=-1
+CLASS_OLD	=0
+CLASS_S		=1
+CLASS_MOB	=2
+CLASS_COMBO_1 =3
+CLASS_COMBO_2 =4
+CLASS_MINION	=5
+CLASS_GRAPPLE = 6
+CLASS_GRAPPLE_1 =7
+CLASS_GRAPPLE_2 =8
+CLASS_MIN_OLD = 9
+CLASS_MIN_S = 10
+---------------------------
+--Tactics (RESCUE)
+---------------------------
+RESCUE_NEVER =0
+RESCUE_FRIEND = 1
+RESCUE_RETAINER = 2
+RESCUE_SELF = 3
+RESCUE_OWNER = 4
+RESCUE_ALL = 5
+
+
+--
+
+KS_NEVER=0
+KS_ALWAYS=1
+KS_POLITE=-1
+
+-- Snipe
+SNIPE_OK = 1
+SNIPE_DISABLE = 0
+
+-- Chase
+CHASE_NORMAL = -1
+CHASE_ALWAYS = 0
+CHASE_NEVER  = 1
+CHASE_CLEVER = 2
+
+--#########################
+--### Tactics Functions ###
+--######################### 
+
+function 	GetTact(t,m)
+	local x
+	if m==nil then
+		TraceAI("GetTact: Error - nil target")
+		-- logappend("AAI_ERROR","GetTact: Error - nil target")
+	end
+	if t==nil then
+		TraceAI("GetTact: Error - nil tactic target:"..m)
+		-- logappend("AAI_ERROR","request for tactic type nil target:"..m)
+	end
+	if (IsPlayer(m)==1) then
+		if (PVPmode~=0) then
+			TraceAI("GetTact: Returning pvp tactic")
+			return GetPVPTact(t,m)
+		else
+			TraceAI("GetTact: not pvp mode returning 0")
+			return 0
+		end
+	end
+	local e = 0
+	if (IsHomun(MyID)==0) then 
+		if (MobID[m]==nil) then
+			e=GetClass(m)
+		else
+			e=MobID[m]
+		end
 	else
+		e=GetV(V_HOMUNTYPE,m)
+	end
+	temp=GetMyTact(e)
+	if (temp==nil) then
+		if (e >= 1324 and e <= 1363) or (e >= 1938 and e <=1946) then
+			temp=GetMyTact(13)
+			TraceAI("GetTact: No tactic "..t.." for "..e.."actor: "..m.." but it's a treasure chest.")
+		end
+		if temp==nil then
+			temp=GetMyTact(0)
+			--TraceAI("GetTact: No tactic "..t.." for "..e.."actor: "..m.." using default instead")
+		end
+	end
+	if (temp[t]==nil) then
+		temp=GetMyTact(0)
+		TraceAI("GetTact: Undefined tactic "..t.." for "..e.."actor: "..m.." using default instead")
+	end
+	x=temp[t]
+	if (x==nil) then
+		-- logappend("AAI_ERROR","Default tactic "..t.." is undefined - Please review and correct tactics file or restore default tactics file")
 		return 0
+	else
+		if t==TACT_SP and x==-1 then
+			x = AttackSkillReserveSP
+		elseif t==TACT_CHASE then
+			--TraceAI("TactChase called"..GetV(V_SP,MyID).." "..ChaseSPPauseSP.." "..GetTick().." "..math.max(LastMovedTime,LastSPTime).." "..(5000-ChaseSPPauseTime))
+			if GetV(V_SP,MyID) < ChaseSPPauseSP and (GetTick() - math.max(LastMovedTime,LastSPTime)) > (5000-ChaseSPPauseTime) then 
+				if ((ChaseSPPause==1 and x~=CHASE_ALWAYS) or x==CHASE_CLEVER) then
+					TraceAI("Cleverchase activated: "..m.." ("..e..") ".." LastTick "..math.max(LastMovedTime,LastSPTime))
+					return 1
+				end
+			end
+			if x==CHASE_ALWAYS then
+				return 0
+			elseif x==CHASE_NEVER then
+				return 1
+			else
+				return DoNotChase
+			end
+		end
+		return x
 	end
 end
+
+function GetMyTact(m)
+	return MyTact[m]
+end
+
+-- HERE THE OLD CODE
+
+function IsMonster(v)
+	--TraceAI ("ATTACK_ "..tonumber(string.sub(tostring(v),5)))
+	if tonumber(string.sub(tostring(v),5))~=nil then
+		if (tonumber(string.sub(tostring(v),5)) > 10000) then
+			return 1
+		else
+			return 0
+		end
+	end
 end
 
 function IsPlayer(id)
