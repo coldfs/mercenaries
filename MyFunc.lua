@@ -240,6 +240,8 @@ end
 -- HERE THE OLD CODE
 
 function IsMonster(v)
+	TraceAI("Ataking")
+    TraceAI(tostring(v))
 	--TraceAI ("ATTACK_ "..tonumber(string.sub(tostring(v),5)))
 	if tonumber(string.sub(tostring(v),5))~=nil then
 		if (tonumber(string.sub(tostring(v),5)) > 10000) then
