@@ -251,9 +251,9 @@ end
 -- HERE THE OLD CODE
 
 function IsMonster(v)
-	TraceAI(" ATACK!!!! CHECKING MONSTER FOR THE GLORY OF SATAN")
-	TraceAI(" TO STRING ID["..tostring(v).."]")
-	TraceAI(" JUST ID["..v.."]")
+	--TraceAI(" ATACK!!!! CHECKING MONSTER FOR THE GLORY OF SATAN")
+	--TraceAI(" TO STRING ID["..tostring(v).."]")
+	--TraceAI(" JUST ID["..v.."]")
 	--logProxy ("ATTACK_ "..tonumber(string.sub(tostring(v),5)))
 	if tonumber(string.sub(tostring(v),5))~=nil then
 		if (tonumber(string.sub(tostring(v),5)) > 10000) then

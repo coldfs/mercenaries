@@ -17,6 +17,13 @@
 --трава
 
 
+--
+--грин  109929330
+--грин
+--грин
+--green
+--blue - 110029222
+
 --Plants List - for avoiding if nesessery
 
 function IsPlant(id)

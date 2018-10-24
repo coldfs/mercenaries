@@ -447,6 +447,7 @@ function	OnATTACK_ST ()
 	end
 	if (MySkill == 0) then
 		logProxy ("Attack")
+		logThis("Now attacking " ..MyEnemy)
 		Attack (MyID,MyEnemy)
 	else
 		SkillObject(MyID,MySkillLevel,MySkill,MyEnemy)
@@ -782,7 +783,7 @@ function Spel_on_self(myid)
 
 	-- ��� ��
 	Vid_M= GetV (V_MERTYPE ,  myid)
-	logThis("Vid_M"..Vid_M)
+	--logThis("Vid_M"..Vid_M)
 	logProxy ("Spel_on_self ")
 	logProxy ("Vid_M "..Vid_M)
 
