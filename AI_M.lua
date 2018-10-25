@@ -448,8 +448,12 @@ function	OnATTACK_ST ()
 	if (MySkill == 0) then
 		logProxy ("Attack")
 		logThis("Now attacking " ..MyEnemy)
+
+		logFullInfo (MyEnemy, "Current enemy")
+
 		Attack (MyID,MyEnemy)
 	else
+		logFullInfo (MyEnemy, "Current skill target")
 		SkillObject(MyID,MySkillLevel,MySkill,MyEnemy)
 		AutoSkillTimeout = GetTick()+15
 	--	if (1 == SkillObject(MyID,MySkillLevel,MySkill,MyEnemy)) then
@@ -522,11 +526,11 @@ function OnPATROL_CMD_ST ()
 	logProxy ("OnPATROL_CMD_ST")
 
 	local	object = GetOwnerEnemy (MyID)
-	if (object == 0) then							
+	if (object == 0) then
 		object = GetMyEnemy (MyID) 
 	end
 
-	if (object ~= 0) then							-- MYOWNER_ATTACKED_IN or ATTACKED_IN
+	if (object ~= 0) then -- MYOWNER_ATTACKED_IN or ATTACKED_IN
 		MyState = CHASE_ST
 		MyEnemy = object
 		logProxy ("PATROL_CMD_ST -> CHASE_ST : ATTACKED_IN")
@@ -534,7 +538,7 @@ function OnPATROL_CMD_ST ()
 	end
 
 	local x , y = GetV (V_POSITION,MyID)
-	if (x == MyDestX and y == MyDestY) then			-- DESTARRIVED_IN
+	if (x == MyDestX and y == MyDestY) then -- DESTARRIVED_IN
 		MyDestX = MyPatrolX
 		MyDestY = MyPatrolY
 		MyPatrolX = x
@@ -562,9 +566,9 @@ function OnHOLD_CMD_ST ()
 
 
 	local	object = GetOwnerEnemy (MyID)
-	if (object == 0) then							
+	if (object == 0) then
 		object = GetMyEnemy (MyID)
-		if (object == 0) then						
+		if (object == 0) then
 			return
 		end
 	end
@@ -778,7 +782,8 @@ end
 
 function Spel_on_self(myid)
 
-	-- ������� ������� �� ������ 
+	logFullInfo (myid, "Merchant Info")
+	-- ������� ������� �� ������
 	SP_H = GetV (V_SP,myid)
 
 	-- ��� ��
@@ -791,7 +796,8 @@ function Spel_on_self(myid)
 	if Vid_M >0 and Vid_M<11 then
 		-- Disguse have same id as bower 
 		if Vid_M == 1 then
-			-- if SP_H > 12 then	
+			-- TODO here we can determine disgaise by maxHp AND maxSP
+			-- if SP_H > 12 then
 			-- 	MySkill = MA_DOUBLE
 			-- 	MySkillLevel = 2
 			-- end
@@ -898,7 +904,7 @@ function AI(myid)
  	if (MyState == IDLE_ST) then
 		OnIDLE_ST ()
 
-	elseif (MyState == CHASE_ST) then					
+	elseif (MyState == CHASE_ST) then
 		OnCHASE_ST ()
 	elseif (MyState == ATTACK_ST) then
 		OnATTACK_ST ()

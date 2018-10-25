@@ -172,6 +172,24 @@ function logThis(log_message)
 	TraceAI(" "..log_message)
 end
 
+function logFullInfo(id, desc)
+
+	logThis("Detailed information for "..desc)
+	logThis ("GetV(V_OWNER) for "..id.." = "..GetV(V_OWNER,id))
+	logThis ("GetV(V_POSITION) for "..id.." = "..GetV(V_POSITION,id))
+	logThis ("GetV(V_TYPE) for "..id.." = "..GetV(V_TYPE,id))
+	logThis ("GetV(V_MOTION) for "..id.." = "..GetV(V_MOTIONR,id))
+	logThis ("GetV(V_ATTACKRANGE) for "..id.." = "..GetV(V_ATTACKRANGE,id))
+	logThis ("GetV(V_TARGET) for "..id.." = "..GetV(V_TARGET,id))
+	logThis ("GetV(V_SKILLATTACKRANGE) for "..id.." = "..GetV(V_SKILLATTACKRANGE,id))
+	logThis ("GetV(V_HP) for "..id.." = "..GetV(V_HP,id))
+	logThis ("GetV(V_SP) for "..id.." = "..GetV(V_SP,id))
+	logThis ("GetV(V_MAXHP) for "..id.." = "..GetV(V_MAXHP,id))
+	logThis ("GetV(V_MAXSP) for "..id.." = "..GetV(V_MAXSP,id))
+	logThis ("GetV(V_MERTYPE) for "..id.." = "..GetV(V_OWNER,V_MERTYPE))
+
+end
+
 
 function 	GetTact(t,m)
 	local x
