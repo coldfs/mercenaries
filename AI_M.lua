@@ -378,7 +378,7 @@ function GetKSReason(myid,target)
 	elseif (tactks==KS_ALWAYS) then
 		--logProxy("It's an FFA monster, not a KS")
 		return "FFA monster"
-	elseif targettarget > 0 and IsMonster(targettarget)~=1 and Actors[targettarget]==1 then
+	elseif targettarget > 0 and IsMonster(targettarget)~=1 then --and Actors[targettarget]==1 then
 		--logProxy("Is KS - "..target.." attacking player "..targettarget.." motion "..motion)
 		if MyFriends[targettarget]~=nil then
 			return "KS - enemy is attacking "..targettarget.." MyFriends: "..MyFriends[targettarget]
@@ -449,11 +449,11 @@ function	OnATTACK_ST ()
 		logProxy ("Attack")
 		logThis("Now attacking " ..MyEnemy)
 
-		logFullInfo (MyEnemy, "Current enemy")
+		-- logFullInfo (MyEnemy, "Current enemy")
 
 		Attack (MyID,MyEnemy)
 	else
-		logFullInfo (MyEnemy, "Current skill target")
+		-- logFullInfo (MyEnemy, "Current skill target")
 		SkillObject(MyID,MySkillLevel,MySkill,MyEnemy)
 		AutoSkillTimeout = GetTick()+15
 	--	if (1 == SkillObject(MyID,MySkillLevel,MySkill,MyEnemy)) then
@@ -782,26 +782,39 @@ end
 
 function Spel_on_self(myid)
 
-	logFullInfo (myid, "Merchant Info")
+	-- logFullInfo (myid, "Merchant Info")
 	-- ������� ������� �� ������
 	SP_H = GetV (V_SP,myid)
 
 	-- ��� ��
 	Vid_M= GetV (V_MERTYPE ,  myid)
-	--logThis("Vid_M"..Vid_M)
+	mhp=GetV(V_MAXHP,myid)
+	msp=GetV(V_MAXSP,myid)
+
+	logThis("Vid_M "..Vid_M)
+	logThis("mhp "..mhp)
+	logThis("msp "..msp)
 	logProxy ("Spel_on_self ")
 	logProxy ("Vid_M "..Vid_M)
 
 	-- ������
 	if Vid_M >0 and Vid_M<11 then
 		-- Disguse have same id as bower 
-		if Vid_M == 1 then
-			-- TODO here we can determine disgaise by maxHp AND maxSP
-			-- if SP_H > 12 then
-			-- 	MySkill = MA_DOUBLE
-			-- 	MySkillLevel = 2
-			-- end
-		
+		if Vid_M == 1 then -- 1rd Grade Bowman Mercenary OR Disguise
+			if (mhp >= 7500 and 9500 >= mhp and msp >= 180 and msp < 220 ) then -- looks like a disguise!
+				-- TODO here we can determine disgaise by maxHp AND maxSP
+				if QuickenTimeout - GetTick () > 30*60 and SP_H > 13 then
+					QuickenTimeout = GetTick ()
+					MySkillLevel = 1
+					SkillObject (myid , MySkillLevel , MER_QUICKEN , myid)
+				end
+			else
+				if SP_H > 12 then
+					MySkill = MA_DOUBLE
+			 		MySkillLevel = 2
+			 	end
+			end
+
 		elseif Vid_M == 3 then	-- Nami - 3rd Grade Bowman Mercenary 
 			-- MER_QUICKEN lv.1
 			logProxy ("QuickenTimeout "..QuickenTimeout )
@@ -825,8 +838,6 @@ function Spel_on_self(myid)
 		end
 	--��������
 	elseif Vid_M >10 and Vid_M<21 then
-
-
 
 	--������
 	elseif Vid_M >20 and Vid_M<31 then
