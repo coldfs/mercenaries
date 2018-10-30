@@ -14,13 +14,13 @@ CHASE_ST				= 2
 ATTACK_ST				= 3
 MOVE_CMD_ST				= 4
 STOP_CMD_ST				= 5
-ATTACK_OBJECT_CMD_ST			= 6
-ATTACK_AREA_CMD_ST			= 7
-PATROL_CMD_ST				= 8
+ATTACK_OBJECT_CMD_ST	= 6
+ATTACK_AREA_CMD_ST		= 7
+PATROL_CMD_ST			= 8
 HOLD_CMD_ST				= 9
-SKILL_OBJECT_CMD_ST			= 10
-SKILL_AREA_CMD_ST			= 11
-FOLLOW_CMD_ST				= 12
+SKILL_OBJECT_CMD_ST		= 10
+SKILL_AREA_CMD_ST		= 11
+FOLLOW_CMD_ST			= 12
 ----------------------------
 
 
@@ -803,9 +803,10 @@ function Spel_on_self(myid)
 		if Vid_M == 1 then -- 1rd Grade Bowman Mercenary OR Disguise
 			if (mhp >= 7500 and 9500 >= mhp and msp >= 180 and msp < 220 ) then -- looks like a disguise!
 				-- TODO here we can determine disgaise by maxHp AND maxSP
-				if QuickenTimeout - GetTick () > 30*60 and SP_H > 13 then
+				--if QuickenTimeout - GetTick () > 30*60 and SP_H > 13 then
+				if QuickenTimeout - GetTick () > 60*60 and SP_H > 18 then
 					QuickenTimeout = GetTick ()
-					MySkillLevel = 1
+					MySkillLevel = 2
 					SkillObject (myid , MySkillLevel , MER_QUICKEN , myid)
 				end
 			else
@@ -914,7 +915,6 @@ function AI(myid)
 	-- ���� ó�� 
  	if (MyState == IDLE_ST) then
 		OnIDLE_ST ()
-
 	elseif (MyState == CHASE_ST) then
 		OnCHASE_ST ()
 	elseif (MyState == ATTACK_ST) then
