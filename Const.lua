@@ -23,7 +23,6 @@ function	IsMonster (id) end -- id�� �����ΰ�? yes -> 1 no -> 0
 --------------------------------------------
 -- constants
 --------------------------------------------
---------------------------------------------
 V_OWNER                           = 0 -- Owner ID
 V_POSITION                        = 1
 V_TYPE                            = 2
@@ -39,6 +38,36 @@ V_MAXSP                           = 11
 V_MERTYPE                         = 12
 V_POSITION_APPLY_SKILLATTACKRANGE = 13
 V_SKILLATTACKRANGE_LEVEL          = 14
+--------------------------------------------
+-- state
+--------------------------------------------
+IDLE_ST                 = 0
+FOLLOW_ST               = 1
+CHASE_ST                = 2
+ATTACK_ST               = 3
+MOVE_CMD_ST             = 4
+STOP_CMD_ST             = 5
+ATTACK_OBJECT_CMD_ST    = 6
+ATTACK_AREA_CMD_ST      = 7
+PATROL_CMD_ST           = 8
+HOLD_CMD_ST             = 9
+SKILL_OBJECT_CMD_ST     = 10
+SKILL_AREA_CMD_ST       = 11
+FOLLOW_CMD_ST           = 12
+--------------------------------------------
+-- global variable
+--------------------------------------------
+MyState				= IDLE_ST	-- ������ ���´� �޽�
+MyEnemy				= 0		-- �� id
+MyDestX				= 0		-- ������ x
+MyDestY				= 0		-- ������ y
+MyPatrolX			= 0		-- ���� ������ x
+MyPatrolY			= 0		-- ���� ������ y
+ResCmdList			= List.new()	-- ���� ��ɾ� ����Ʈ
+MyID				= 0		-- �뺴 id
+MySkill				= 0		-- �뺴�� ��ų
+MySkillLevel		= 0		-- �뺴�� ��ų ����
+MYTickTime		= 0
 --------------------------------------------
 -- Homunculus type
 --------------------------------------------

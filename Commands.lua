@@ -10,9 +10,9 @@ function OnMOVE_CMD (x,y)
     end
 
     local curX, curY = GetV (V_POSITION,MyID)
-    if (math.abs(x-curX)+math.abs(y-curY) > 15) then        -- �������� ���� �Ÿ� �̻��̸� (�������� �հŸ��� ó������ �ʱ� ������)
-        List.pushleft (ResCmdList,{MOVE_CMD,x,y})           -- ���� ���������� �̵��� �����Ѵ�.
-        x = math.floor((x+curX)/2)                          -- �߰��������� ���� �̵��Ѵ�.
+    if (math.abs(x-curX)+math.abs(y-curY) > 15) then        -- Destination more than 15 cells ahead
+        List.pushleft (ResCmdList,{MOVE_CMD,x,y})           -- Push command to pool again
+        x = math.floor((x+curX)/2)                          -- Move half way to destination
         y = math.floor((y+curY)/2)                          --
     end
 
