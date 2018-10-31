@@ -19,7 +19,7 @@ function Spel_on_self(myid)
     if Vid_M >0 and Vid_M<11 then
         -- Disguse have same id as bower
         if Vid_M == 1 then -- 1rd Grade Bowman Mercenary OR Disguise
-            if (mhp >= 7500 and 9500 >= mhp and msp >= 180 and msp < 220 ) then -- looks like a disguise!
+            if (mhp >= 7500 and 10000 >= mhp and msp >= 180 and msp < 220 ) then -- looks like a disguise!
                 -- TODO here we can determine disgaise by maxHp AND maxSP
                 --if QuickenTimeout - GetTick () > 30*60 and SP_H > 13 then
                 if QuickenTimeout - GetTick () > 60*60 and SP_H > 18 then

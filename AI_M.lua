@@ -1,12 +1,13 @@
 
-require "AI_sakray\\USER_AI\\Const"
+
 require "AI_sakray\\USER_AI\\Util"
+require "AI_sakray\\USER_AI\\Const"
 require "AI_sakray\\USER_AI\\MyFunc"
 require "AI_sakray\\USER_AI\\Commands"
 require "AI_sakray\\USER_AI\\States"
 require "AI_sakray\\USER_AI\\Spell"
 require "AI_sakray\\USER_AI\\A_Plants"
-require "AI_sakray\\USER_AI\\A_Friends.lua"
+require "AI_sakray\\USER_AI\\A_Friends"
 
 function AI(myid)
 
