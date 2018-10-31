@@ -1,9 +1,11 @@
 
 require "AI_sakray\\USER_AI\\Const"
-require "AI_sakray\\USER_AI\\Util"	
+require "AI_sakray\\USER_AI\\Util"
 require "AI_sakray\\USER_AI\\MyFunc"
+require "AI_sakray\\USER_AI\\Commands"
 require "AI_sakray\\USER_AI\\A_Plants"
-dofile( "AI_sakray\\USER_AI\\A_Friends.lua")
+require "AI_sakray\\USER_AI\\A_Friends.lua"
+
 
 -----------------------------
 -- state
@@ -40,160 +42,8 @@ MySkillLevel		= 0		-- �뺴�� ��ų ����
 MYTickTime		= 0
 ------------------------------------------
 
-
-------------- command process  ---------------------
-
-function	OnMOVE_CMD (x,y)
-	
-	logProxy ("OnMOVE_CMD-1")
-
-	if ( x == MyDestX and y == MyDestY and MOTION_MOVE == GetV(V_MOTION,MyID)) then
-		return		-- ���� �̵����� �������� ���� ���̸� ó������ �ʴ´�. 
-	end
-
-	local curX, curY = GetV (V_POSITION,MyID)
-	if (math.abs(x-curX)+math.abs(y-curY) > 15) then		-- �������� ���� �Ÿ� �̻��̸� (�������� �հŸ��� ó������ �ʱ� ������)
-		List.pushleft (ResCmdList,{MOVE_CMD,x,y})			-- ���� ���������� �̵��� �����Ѵ�. 	
-		x = math.floor((x+curX)/2)							-- �߰��������� ���� �̵��Ѵ�.  
-		y = math.floor((y+curY)/2)							-- 
-	end
-
-	Move (MyID,x,y)	
-	
-	MyState = MOVE_CMD_ST
-	MyDestX = x
-	MyDestY = y
-	MyEnemy = 0
-	MySkill = 0
-
-end
-
-
-
-function	OnSTOP_CMD ()
-
-	logProxy ("OnSTOP_CMD")
-
-	if (GetV(V_MOTION,MyID) ~= MOTION_STAND) then
-		Move (MyID,GetV(V_POSITION,MyID))
-	end
-	MyState = IDLE_ST
-	MyDestX = 0
-	MyDestY = 0
-	MyEnemy = 0
-	MySkill = 0
-
-end
-
-
-
-function	OnATTACK_OBJECT_CMD (id)
-
-	logProxy ("OnATTACK_OBJECT_CMD")
-
-	MySkill = 0
-	MyEnemy = id
-	MyState = CHASE_ST
-
-end
-
-
-
-function	OnATTACK_AREA_CMD (x,y)
-
-	logProxy ("OnATTACK_AREA_CMD")
-
-	if (x ~= MyDestX or y ~= MyDestY or MOTION_MOVE ~= GetV(V_MOTION,MyID)) then
-		Move (MyID,x,y)	
-	end
-	MyDestX = x
-	MyDestY = y
-	MyEnemy = 0
-	MyState = ATTACK_AREA_CMD_ST
-	
-end
-
-
-
-function	OnPATROL_CMD (x,y)
-
-	logProxy ("OnPATROL_CMD")
-
-	MyPatrolX , MyPatrolY = GetV (V_POSITION,MyID)
-	MyDestX = x
-	MyDestY = y
-	Move (MyID,x,y)
-	MyState = PATROL_CMD_ST
-
-end
-
-
-
-function	OnHOLD_CMD ()
-
-	logProxy ("OnHOLD_CMD")
-
-	MyDestX = 0
-	MyDestY = 0
-	MyEnemy = 0
-	MyState = HOLD_CMD_ST
-
-end
-
-
-
-function	OnSKILL_OBJECT_CMD (level,skill,id)
-
-	logProxy ("OnSKILL_OBJECT_CMD")
-
-	MySkillLevel = level
-	MySkill = skill
-	MyEnemy = id
-	MyState = CHASE_ST
-
-end
-
-
-
-function	OnSKILL_AREA_CMD (level,skill,x,y)
-
-	logProxy ("OnSKILL_AREA_CMD")
-
-	Move (MyID,x,y)
-	MyDestX = x
-	MyDestY = y
-	MySkillLevel = level
-	MySkill = skill
-	MyState = SKILL_AREA_CMD_ST
-	
-end
-
-
-
-function	OnFOLLOW_CMD ()
-
-	-- ������� �����¿� �޽Ļ��¸� ���� ��ȯ��Ų��. 
-	if (MyState ~= FOLLOW_CMD_ST) then
-		MoveToOwner (MyID)
-		MyState = FOLLOW_CMD_ST
-		MyDestX, MyDestY = GetV (V_POSITION,GetV(V_OWNER,MyID))
-		MyEnemy = 0 
-		MySkill = 0
-		logProxy ("OnFOLLOW_CMD")
-	else
-		MyState = IDLE_ST
-		MyEnemy = 0 
-		MySkill = 0
-		logProxy ("FOLLOW_CMD_ST --> IDLE_ST")
-	end
-
-end
-
-
-
-function	ProcessCommand (msg)
-
-	if		(msg[1] == MOVE_CMD) then
+function ProcessCommand (msg)
+	if(msg[1] == MOVE_CMD) then
 		OnMOVE_CMD (msg[2],msg[3])
 		logProxy ("MOVE_CMD")
 	elseif	(msg[1] == STOP_CMD) then
@@ -227,7 +77,6 @@ end
 
 
 -------------- state process  --------------------
-
 
 function	OnIDLE_ST ()
 	
@@ -883,21 +732,23 @@ function Spel_on_self(myid)
 
 		end
 
-end
+	end
 end
 
 function AI(myid)
 
 	MyID = myid
-	local msg	= GetMsg (myid)			-- command
-	local rmsg	= GetResMsg (myid)		-- reserved command
+	-- command
+	local msg  = GetMsg (myid)
+	-- reserved command
+	local rmsg = GetResMsg (myid)
+
 	--MYTickTime	= MYTickTime+1
-	
 	--QuickenTimeout = GetTick()
 	--logProxy ("MYTickTime "..MYTickTime)
 	--logProxy ("MyState "..MyState)
 
-	-- ���� ��������� ����� �� ������� ���� �� ����
+	-- Choose spell
 	Spel_on_self(myid)
 
 	if msg[1] == NONE_CMD then
@@ -911,7 +762,7 @@ function AI(myid)
 		ProcessCommand (msg)	-- ��ɾ� ó�� 
 	end
 
-		
+
 	-- ���� ó�� 
  	if (MyState == IDLE_ST) then
 		OnIDLE_ST ()
