@@ -141,7 +141,6 @@ RESCUE_SELF = 3
 RESCUE_OWNER = 4
 RESCUE_ALL = 5
 
-
 --
 
 KS_NEVER=0
@@ -190,6 +189,53 @@ function logFullInfo(id, desc)
 
 end
 
+function GetMerType(myid)
+	local merctype=GetV(V_MERTYPE,myid)
+	TraceAI("Merc is homun?"..IsHomun(myid))
+	if (merctype~=1) then
+		return merctype
+	elseif merctype > 30 then
+		logProxy("Invalid merctype (>30) reported"..merctype)
+		return merctype
+	else
+		mhp=GetV(V_MAXHP,myid)
+		msp=GetV(V_MAXSP,myid)
+		logThis('Trying ro figure out mercenary id '..merctype..' maxHp '..mhp.." maxSP "..msp)
+		if (mhp > 250 and mhp < 333 and msp >= 200 and 250 >= msp ) then -- it's an archer 1
+			return ARCHER01
+		elseif (mhp == 7513 and msp == 201) then
+			logProxy("Newly summoned Pengineer")
+			return PENGINEER
+		elseif (mhp >= 4000 and 5000 >= mhp and msp >= 50 and msp < 65 ) then -- looks like a kitty!
+			logProxy("Wild Rose")
+			return WILDROSE
+		elseif (mhp >= 7513 and 8500 >= mhp and msp >= 201 and msp < 250 ) then
+			logProxy("Pengineer")
+			return PENGINEER
+		elseif (mhp >= 7200 and 7512 >= mhp and msp >= 200 and msp < 250 ) then -- looks like a dopple!
+			logProxy("Dopple Merc")
+			return DOPPLEMERC
+		elseif (mhp >= 10000 and 13000 >= mhp and msp >= 220 and msp < 300 ) then -- looks like alice!
+			logProxy("Alice")
+			return ALICE
+		elseif	(mhp >= 6100 and 7200 >= mhp and msp >= 180 and msp < 250 ) then -- looks like a mimic!
+			logProxy("Mimic")
+			return MIMIC
+		elseif (mhp >= 7500 and 9500 >= mhp and msp >= 180 and msp < 220 ) then -- looks like a disguise!
+			logProxy("Disguise")
+			return DISGUISE
+		elseif (mhp >= 7000 and 8500 >= mhp and msp >= 250 and msp < 320 ) then -- looks like a male GM mercenary!
+			logProxy("GM Mercenary")
+			return GMMALE
+		elseif (mhp > 12300 and 14500 >= mhp and msp >= 450 and msp < 600 ) then -- Nice stats, must be one of them overpowerd isis mercs
+			logProxy("ISIS Mercenary")
+			return ISIS
+		else
+			logProxy("Unknown merc type. Contact the developer ASAP.")
+			return UNKNOWNMER
+		end
+	end
+end
 
 function 	GetTact(t,m)
 	local x

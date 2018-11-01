@@ -6,7 +6,6 @@ require "AI_sakray\\USER_AI\\MyFunc"
 require "AI_sakray\\USER_AI\\Commands"
 require "AI_sakray\\USER_AI\\States"
 require "AI_sakray\\USER_AI\\Spell"
-require "AI_sakray\\USER_AI\\A_Plants"
 require "AI_sakray\\USER_AI\\A_Friends"
 
 function AI(myid)
@@ -23,7 +22,12 @@ function AI(myid)
 	--logProxy ("MyState "..MyState)
 
 	-- Choose spell (Active and Passive)
-	Spel_on_self(myid)
+
+	-- TODO - move this in STATE handlers (idle and attack)
+	recastQuicken(myid)
+	setAttackSkill(myid)
+	-- Old version
+	-- Spel_on_self(myid)
 
 	if msg[1] == NONE_CMD then
 		if rmsg[1] ~= NONE_CMD then

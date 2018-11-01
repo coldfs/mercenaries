@@ -1,3 +1,45 @@
+function recastQuicken(myid) -- Or possible other self/buff skills
+    MercType = GetMerType(myid);
+    logThis('Found merchant with type: '..MercType)
+    level=SkillList[MercType][MER_QUICKEN]
+    if level ~=nil then
+        skill=MER_QUICKEN
+        -- Прошлый квикен кончился, если есть СП - нужно рекастануть.
+        if QuickenTimeout - GetTick () > 60*60 and SP_H > 18 then
+            QuickenTimeout = GetTick ()
+            SkillObject (myid , level , MER_QUICKEN , myid)
+        end
+
+    end
+end
+
+function setAttackSkill(myid)
+    MercType = GetMerType(myid);
+    SP_H = GetV (V_SP, myid)
+
+    -- MA_DOUBLE
+    DoubleLevel = SkillList[MercType][MA_DOUBLE]
+    if DoubleLevel ~=nil then
+        if SP_H > 12 then
+            MySkill = MA_DOUBLE
+            MySkillLevel = DoubleLevel
+        end
+        return
+    end
+
+    -- MS_BASH
+    BashLevel = SkillList[MercType][MS_BASH]
+    if BashLevel ~=nil then
+        -- TODO deal with sp level
+        if (SP_H > 20) then
+            MySkill = MS_BASH
+            MySkillLevel = BashLevel
+        end
+        return
+    end
+
+end
+
 function Spel_on_self(myid)
 
     -- logFullInfo (myid, "Merchant Info")
