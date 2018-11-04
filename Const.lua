@@ -369,11 +369,6 @@ SkillList[LANCER09][ML_AUTOGUARD]=7
 SkillList[LANCER10][ML_AUTOGUARD]=10
 SkillList[MIMIC][ML_AUTOGUARD]=5
 SkillList[SWORDMAN08][MS_PARRYING]=4
-SkillList[GMMALE][MER_KYRIE]=5
-SkillList[GMMALE][MER_BLESSING]=5
-SkillList[GMMALE][MER_INCAGI]=5
-SkillList[PENGINEER][MER_BLESSING]=5
-SkillList[ISIS][MS_BASH]=10
 --------------------------------------------
 -- command
 --------------------------------------------

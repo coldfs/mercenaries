@@ -1,12 +1,18 @@
 function recastQuicken(myid) -- Or possible other self/buff skills
     MercType = GetMerType(myid);
     logThis('Found merchant with type: '..MercType)
+   
+    SP_H = GetV (V_SP, myid)
+
     level=SkillList[MercType][MER_QUICKEN]
     if level ~=nil then
-        skill=MER_QUICKEN
+	-- logThis("Quicken level "..level.." sp "..SP_H)
+	-- logThis("Timeout")
+	skill=MER_QUICKEN
         -- Прошлый квикен кончился, если есть СП - нужно рекастануть.
-        if QuickenTimeout - GetTick () > 60*60 and SP_H > 18 then
-            QuickenTimeout = GetTick ()
+        if false and GetTick() - QuickenTimeout > 60*60 and SP_H > 18 then
+	    -- logThis("timeout "..QuickenTimeout.." tick"..GetTick())
+	    QuickenTimeout = GetTick ()
             SkillObject (myid , level , MER_QUICKEN , myid)
         end
 

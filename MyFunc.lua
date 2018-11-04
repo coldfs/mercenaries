@@ -191,7 +191,7 @@ end
 
 function GetMerType(myid)
 	local merctype=GetV(V_MERTYPE,myid)
-	TraceAI("Merc is homun?"..IsHomun(myid))
+	-- TraceAI("Merc is homun?"..IsHomun(myid))
 	if (merctype~=1) then
 		return merctype
 	elseif merctype > 30 then
