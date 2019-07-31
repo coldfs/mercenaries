@@ -1,4 +1,4 @@
-#### Mercenari AI
+#### Mercenari AI (For Ragnarok Online)
 
 ##### Changelog
 * v1.1.4 - Finally no killsteal. No alerts. Doubles and bash works. Merch Db
